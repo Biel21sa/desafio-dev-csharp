@@ -1,5 +1,4 @@
-﻿
-using System.Text.Json;
+﻿using System.Text.Json;
 using DesafioDev.App.Models;
 using DesafioDev.App.Services;
 
@@ -29,13 +28,16 @@ if (dados is null)
 
 var comissaoService = new ComissaoService();
 
-foreach (Venda venda in dados.Vendas)
-{
-    decimal comissao = comissaoService.CalcularComissao(venda.Valor);
+List<ResumoComissao> resumos =
+    comissaoService.GerarResumo(dados.Vendas);
 
-    Console.WriteLine(
-        $"Vendedor: {venda.Vendedor} | " +
-        $"Venda: R$ {venda.Valor:F2} | " +
-        $"Comissão: R$ {comissao:F2}"
-    );
+Console.WriteLine("===== RESUMO DE COMISSÕES =====");
+Console.WriteLine();
+
+foreach (ResumoComissao resumo in resumos)
+{
+    Console.WriteLine($"Vendedor: {resumo.Vendedor}");
+    Console.WriteLine($"Total vendido: R$ {resumo.TotalVendido:F2}");
+    Console.WriteLine($"Total de comissão: R$ {resumo.TotalComissao:F2}");
+    Console.WriteLine("--------------------------------");
 }
