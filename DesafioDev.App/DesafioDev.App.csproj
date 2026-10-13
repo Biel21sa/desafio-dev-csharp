@@ -7,12 +7,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-
     <ItemGroup>
-        <None Update="Data\vendas.json">
+        <None Update="Data\*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-
 
 </Project>
