@@ -74,9 +74,126 @@ if (dadosEstoque is null)
 
 var estoqueService = new EstoqueService(dadosEstoque.Estoque);
 
-estoqueService.RegistrarEntrada(101, 20);
-estoqueService.RegistrarSaida(101, 30);
-estoqueService.RegistrarSaida(102, 10);
+
+bool menuEstoqueAtivo = true;
+
+while (menuEstoqueAtivo)
+{
+    Console.WriteLine();
+    Console.WriteLine("===== CONTROLE DE ESTOQUE =====");
+    Console.WriteLine("1 - Registrar entrada");
+    Console.WriteLine("2 - Registrar saída");
+    Console.WriteLine("3 - Consultar estoque");
+    Console.WriteLine("4 - Consultar movimentações");
+    Console.WriteLine("0 - Continuar para o próximo exercício");
+    Console.Write("Escolha uma opção: ");
+
+    string? opcao = Console.ReadLine();
+
+    switch (opcao)
+    {
+        case "1":
+        case "2":
+        {
+            Console.Write("Código do produto: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int codigo))
+            {
+                Console.WriteLine("Código inválido.");
+                continue;
+            }
+
+            Console.Write("Quantidade: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int quantidade))
+            {
+                Console.WriteLine("Quantidade inválida.");
+                continue;
+            }
+
+            try
+            {
+                MovimentacaoEstoque movimentacao;
+
+                if (opcao == "1")
+                {
+                    movimentacao =
+                        estoqueService.RegistrarEntrada(codigo, quantidade);
+                }
+                else
+                {
+                    movimentacao =
+                        estoqueService.RegistrarSaida(codigo, quantidade);
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Movimentação registrada com sucesso!");
+                Console.WriteLine($"ID: {movimentacao.Id}");
+                Console.WriteLine($"Descrição: {movimentacao.Descricao}");
+                Console.WriteLine($"Estoque atual: {movimentacao.EstoqueFinal}");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Erro: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"Erro: {ex.Message}");
+            }
+
+            break;
+        }
+
+        case "3":
+            Console.WriteLine();
+            Console.WriteLine("===== ESTOQUE ATUAL =====");
+
+            foreach (Produto produto in estoqueService.Produtos)
+            {
+                Console.WriteLine(
+                    $"Código: {produto.CodigoProduto} | " +
+                    $"Produto: {produto.DescricaoProduto} | " +
+                    $"Estoque: {produto.Estoque}"
+                );
+            }
+
+            break;
+
+        case "4":
+            Console.WriteLine();
+            Console.WriteLine("===== HISTÓRICO DE MOVIMENTAÇÕES =====");
+
+            if (estoqueService.Movimentacoes.Count == 0)
+            {
+                Console.WriteLine("Nenhuma movimentação registrada.");
+                break;
+            }
+
+            foreach (
+                MovimentacaoEstoque movimentacao
+                in estoqueService.Movimentacoes
+            )
+            {
+                Console.WriteLine($"ID: {movimentacao.Id}");
+                Console.WriteLine($"Produto: {movimentacao.DescricaoProduto}");
+                Console.WriteLine($"Descrição: {movimentacao.Descricao}");
+                Console.WriteLine($"Tipo: {movimentacao.Tipo}");
+                Console.WriteLine($"Quantidade: {movimentacao.Quantidade}");
+                Console.WriteLine($"Estoque final: {movimentacao.EstoqueFinal}");
+                Console.WriteLine("--------------------------------");
+            }
+
+            break;
+
+        case "0":
+            menuEstoqueAtivo = false;
+            break;
+
+        default:
+            Console.WriteLine("Opção inválida. Tente novamente.");
+            break;
+    }
+}
 
 Console.WriteLine();
 Console.WriteLine("===== HISTÓRICO DE MOVIMENTAÇÕES =====");
