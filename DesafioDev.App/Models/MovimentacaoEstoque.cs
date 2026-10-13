@@ -15,4 +15,6 @@ public class MovimentacaoEstoque
     public DateTime DataHora { get; set; } = DateTime.Now;
 
     public int EstoqueFinal { get; set; }
+
+    public string Descricao { get; set; } = string.Empty;
 }
